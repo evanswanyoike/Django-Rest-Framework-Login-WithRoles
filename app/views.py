@@ -1,4 +1,5 @@
 from django.http import JsonResponse
+from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -36,7 +37,7 @@ class AdminLoginView(APIView):
 # @renderer_classes(JSONRenderer)
 def get_external_data(request):
     # Make the GET request to the external API
-    url = 'https://jsonplaceholder.typicode.com/posts'  # Replace with the URL of the external API
+    url = 'https://jsonplaceholder.typicode.com/users'  # Replace with the URL of the external API
     headers = {'Content-Type': 'application/json'}  # Replace with the required headers
     response = requests.get(url, headers=headers)
 
@@ -49,3 +50,19 @@ def get_external_data(request):
     else:
         # Error response from the external API
         return Response({'message': 'API call failed'}, status=response.status_code)
+
+
+def get_external_data_template(request):
+    # Make the GET request to the external API
+    url = 'https://jsonplaceholder.typicode.com/users'  # Replace with the URL of the external API
+    headers = {'Content-Type': 'application/json'}  # Replace with the required headers
+    response = requests.get(url, headers=headers)
+
+    # Check the response status code
+    if response.status_code == 200:
+        # Successful response from the external API
+        data = response.json()
+        return render(request, 'external_data.html', {'data': data})
+    else:
+        # Error response from the external API
+        return render(request, 'error.html', {'message': 'API call failed'})
